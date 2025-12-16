@@ -1,0 +1,85 @@
+<div class="patients-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>people</mat-icon>
+        Gestión de Pacientes
+      </mat-card-title>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="onAddPatient()">
+          <mat-icon>add</mat-icon>
+          Nuevo Paciente
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="loading-container" *ngIf="loading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <div class="error-container" *ngIf="error$ | async as error">
+        <mat-icon color="warn">error</mat-icon>
+        <span>{{ error }}</span>
+      </div>
+
+      <div class="table-container" *ngIf="!(loading$ | async)">
+        <ng-container *ngIf="(patients$ | async) as patients">
+          <table mat-table [dataSource]="patients || []" class="patients-table" *ngIf="(patients || []).length > 0">
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let patient">{{ patient.nombre }}</td>
+            </ng-container>
+      
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let patient">{{ patient.email }}</td>
+            </ng-container>
+      
+            <ng-container matColumnDef="documento">
+              <th mat-header-cell *matHeaderCellDef>Documento</th>
+              <td mat-cell *matCellDef="let patient">{{ patient.documento }}</td>
+            </ng-container>
+      
+            <ng-container matColumnDef="fechaNacimiento">
+              <th mat-header-cell *matHeaderCellDef>Edad</th>
+              <td mat-cell *matCellDef="let patient">
+                {{ getAge(patient.fechaNacimiento) }} años
+              </td>
+            </ng-container>
+      
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let patient">
+                <button mat-icon-button color="primary" (click)="onViewPatient(patient.id)" title="Ver">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" (click)="onEditPatient(patient.id)" title="Editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="onDeletePatient(patient.id)" title="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+      
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+      
+          <div class="empty-state" *ngIf="(patients || []).length === 0">
+            <mat-icon>people_outline</mat-icon>
+            <p>No hay pacientes registrados</p>
+            <button mat-raised-button color="primary" (click)="onAddPatient()">
+              Agregar Primer Paciente
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+

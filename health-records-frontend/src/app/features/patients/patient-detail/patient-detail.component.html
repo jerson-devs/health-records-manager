@@ -1,0 +1,111 @@
+<div class="detail-container">
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!(loading$ | async) && (patient$ | async) as patient">
+    <mat-card class="patient-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>person</mat-icon>
+          {{ patient.nombre }}
+        </mat-card-title>
+        <div class="header-actions">
+          <button mat-raised-button color="primary" (click)="onEdit()">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="patient-info">
+          <div class="info-item">
+            <mat-icon>email</mat-icon>
+            <div>
+              <strong>Email:</strong>
+              <span>{{ patient.email }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>badge</mat-icon>
+            <div>
+              <strong>Documento:</strong>
+              <span>{{ patient.documento }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>cake</mat-icon>
+            <div>
+              <strong>Edad:</strong>
+              <span>{{ getAge(patient.fechaNacimiento) }} años</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="records-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>medical_services</mat-icon>
+          Historiales Médicos
+        </mat-card-title>
+        <div class="header-actions">
+          <button mat-raised-button color="primary" (click)="onAddRecord()">
+            <mat-icon>add</mat-icon>
+            Nuevo Historial
+          </button>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="loading-records" *ngIf="recordsLoading$ | async">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Cargando historiales médicos...</p>
+        </div>
+        <ng-container *ngIf="!(recordsLoading$ | async)">
+          <ng-container *ngIf="(medicalRecords$ | async) as records">
+            <table mat-table [dataSource]="records || []" class="records-table" *ngIf="(records || []).length > 0">
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef>Fecha</th>
+              <td mat-cell *matCellDef="let record">{{ record.fecha | date:'short':'es' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="diagnostico">
+              <th mat-header-cell *matHeaderCellDef>Diagnóstico</th>
+              <td mat-cell *matCellDef="let record">{{ record.diagnostico }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="medico">
+              <th mat-header-cell *matHeaderCellDef>Médico</th>
+              <td mat-cell *matCellDef="let record">{{ record.medico }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let record">
+                <button mat-icon-button color="primary" (click)="onViewRecord(record.id)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <div class="empty-state" *ngIf="(records || []).length === 0">
+              <mat-icon>medical_services</mat-icon>
+              <p>No hay historiales médicos registrados</p>
+              <button mat-raised-button color="primary" (click)="onAddRecord()">
+                Agregar Primer Historial
+              </button>
+            </div>
+          </ng-container>
+        </ng-container>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

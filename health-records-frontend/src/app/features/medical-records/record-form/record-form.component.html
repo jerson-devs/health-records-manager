@@ -1,0 +1,71 @@
+<div class="form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Editar Historial Médico' : 'Nuevo Historial Médico' }}
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="recordForm" (ngSubmit)="onSubmit()" class="record-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Paciente</mat-label>
+          <mat-select formControlName="patientId" required>
+            <mat-option *ngFor="let patient of patients$ | async" [value]="patient.id">
+              {{ patient.nombre }} - {{ patient.documento }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="recordForm.get('patientId')?.hasError('required')">
+            El paciente es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Fecha</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="fecha" required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="recordForm.get('fecha')?.hasError('required')">
+            La fecha es requerida
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Diagnóstico</mat-label>
+          <textarea matInput formControlName="diagnostico" rows="3" required></textarea>
+          <mat-error *ngIf="recordForm.get('diagnostico')?.hasError('required')">
+            El diagnóstico es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tratamiento</mat-label>
+          <textarea matInput formControlName="tratamiento" rows="4" required></textarea>
+          <mat-error *ngIf="recordForm.get('tratamiento')?.hasError('required')">
+            El tratamiento es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Médico</mat-label>
+          <input matInput formControlName="medico" required>
+          <mat-error *ngIf="recordForm.get('medico')?.hasError('required')">
+            El nombre del médico es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="onCancel()" [disabled]="loading$ | async">
+            Cancelar
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="recordForm.invalid || (loading$ | async)">
+            <mat-spinner diameter="20" *ngIf="loading$ | async" class="spinner"></mat-spinner>
+            <span *ngIf="!(loading$ | async)">{{ isEditMode ? 'Actualizar' : 'Crear' }}</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+

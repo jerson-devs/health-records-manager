@@ -1,0 +1,74 @@
+<div class="detail-container">
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && record">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>medical_services</mat-icon>
+          Historial Médico
+        </mat-card-title>
+        <div class="header-actions">
+          <button mat-button (click)="onBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Volver
+          </button>
+          <button mat-raised-button color="primary" (click)="onEdit()">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="record-info">
+          <div class="info-section">
+            <h3>Información del Paciente</h3>
+            <div class="info-item">
+              <mat-icon>person</mat-icon>
+              <div>
+                <strong>Paciente:</strong>
+                <span>{{ record.patientName }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h3>Detalles del Historial</h3>
+            <div class="info-item">
+              <mat-icon>event</mat-icon>
+              <div>
+                <strong>Fecha:</strong>
+                <span>{{ record.fecha | date:'full':'es' }}</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <mat-icon>person</mat-icon>
+              <div>
+                <strong>Médico:</strong>
+                <span>{{ record.medico }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h3>Diagnóstico</h3>
+            <div class="content-box">
+              {{ record.diagnostico }}
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h3>Tratamiento</h3>
+            <div class="content-box">
+              {{ record.tratamiento }}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

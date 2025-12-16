@@ -1,0 +1,103 @@
+<div class="records-list-container">
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>medical_services</mat-icon>
+        Historiales Médicos
+      </mat-card-title>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="onAddRecord()">
+          <mat-icon>add</mat-icon>
+          Nuevo Historial
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="subtitle">Lista de todos los historiales médicos de todos los pacientes</p>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="error-container" *ngIf="error$ | async as error">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <mat-card class="records-card" *ngIf="!(loading$ | async) && !(error$ | async)">
+    <mat-card-content>
+      <ng-container *ngIf="(records$ | async) as records">
+        <table mat-table [dataSource]="records || []" class="records-table" *ngIf="(records || []).length > 0">
+          <!-- Fecha Column -->
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef>Fecha</th>
+            <td mat-cell *matCellDef="let record">
+              {{ record.fecha | date:'short':'es' }}
+            </td>
+          </ng-container>
+
+          <!-- Paciente Column -->
+          <ng-container matColumnDef="paciente">
+            <th mat-header-cell *matHeaderCellDef>Paciente</th>
+            <td mat-cell *matCellDef="let record">
+              <button mat-button color="primary" (click)="onViewPatient(record.patientId)">
+                <mat-icon>person</mat-icon>
+                {{ record.patientName }}
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Diagnóstico Column -->
+          <ng-container matColumnDef="diagnostico">
+            <th mat-header-cell *matHeaderCellDef>Diagnóstico</th>
+            <td mat-cell *matCellDef="let record">
+              <span class="diagnostico-text">{{ record.diagnostico }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Médico Column -->
+          <ng-container matColumnDef="medico">
+            <th mat-header-cell *matHeaderCellDef>Médico</th>
+            <td mat-cell *matCellDef="let record">
+              <mat-chip>{{ record.medico }}</mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Tratamiento Column -->
+          <ng-container matColumnDef="tratamiento">
+            <th mat-header-cell *matHeaderCellDef>Tratamiento</th>
+            <td mat-cell *matCellDef="let record">
+              <span class="tratamiento-text" [title]="record.tratamiento">
+                {{ record.tratamiento.length > 50 ? (record.tratamiento | slice:0:50) + '...' : record.tratamiento }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let record">
+              <button mat-icon-button color="primary" (click)="onViewRecord(record.id)" matTooltip="Ver detalles">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <div class="empty-state" *ngIf="(records || []).length === 0">
+          <mat-icon>medical_services</mat-icon>
+          <p>No hay historiales médicos registrados</p>
+          <button mat-raised-button color="primary" (click)="onAddRecord()">
+            <mat-icon>add</mat-icon>
+            Agregar Primer Historial
+          </button>
+        </div>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>

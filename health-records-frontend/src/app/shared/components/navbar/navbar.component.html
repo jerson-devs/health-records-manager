@@ -1,0 +1,42 @@
+<mat-toolbar color="primary" class="navbar">
+  <div class="navbar-content">
+    <div class="navbar-left" routerLink="/patients">
+      <img src="assets/logo.png" alt="Health Records Manager" class="navbar-logo">
+      <span class="navbar-title">Health Records Manager</span>
+    </div>
+    
+    <div class="navbar-right" *ngIf="isAuthenticated$ | async">
+      <button mat-button routerLink="/patients" routerLinkActive="active">
+        <mat-icon>people</mat-icon>
+        Pacientes
+      </button>
+      <button mat-button routerLink="/medical-records" routerLinkActive="active">
+        <mat-icon>medical_services</mat-icon>
+        Historiales Médicos
+      </button>
+      <button mat-button routerLink="/records/new" routerLinkActive="active">
+        <mat-icon>add</mat-icon>
+        Nuevo Historial
+      </button>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <div class="user-info" *ngIf="user$ | async as user">
+          <div class="user-name">{{ user.username }}</div>
+          <div class="user-email">{{ user.email }}</div>
+          <div class="user-role">{{ user.role }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar Sesión</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</mat-toolbar>
+
+
+
+

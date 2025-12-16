@@ -1,0 +1,115 @@
+## .NET Core
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+*.userosscache
+*.sln.docstates
+
+## Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
+
+## Rider
+.idea/
+*.sln.iml
+
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## NuGet Packages
+*.nupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Entity Framework
+**/Migrations/*.Designer.cs
+!**/Migrations/*InitialCreate.Designer.cs
+
+## Angular
+health-records-frontend/node_modules/
+health-records-frontend/dist/
+health-records-frontend/.angular/
+health-records-frontend/.sass-cache/
+health-records-frontend/connect.lock
+health-records-frontend/coverage/
+health-records-frontend/libpeerconnection.log
+health-records-frontend/testem.log
+health-records-frontend/typings/
+health-records-frontend/.idea/
+health-records-frontend/*.iml
+health-records-frontend/.vscode/
+health-records-frontend/.DS_Store
+health-records-frontend/Thumbs.db
+
+## Environment variables
+.env
+.env.local
+.env.*.local
+appsettings.Development.json
+appsettings.Production.json
+
+## OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+## Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## Database
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+## Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+
+## Documentation (ignored)
+docs/
+health-records-frontend/docs/
+LEVANTAR_APP.md
+
