@@ -408,3 +408,4 @@ Desarrollado como proyecto de demostración de expertise en .NET Core 8, Angular
 ---
 
 **¿Necesitas ayuda?** Consulta [LEVANTAR_APP.md](LEVANTAR_APP.md) para instrucciones detalladas de instalación y solución de problemas.
+

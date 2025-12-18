@@ -122,7 +122,10 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   }
 
   onEdit(): void {
-    this.router.navigate(['/patients', this.patientId, 'edit']);
+    // Pasar el returnUrl en el state para que el formulario sepa que debe volver al detalle del paciente
+    this.router.navigate(['/patients', this.patientId, 'edit'], {
+      state: { returnUrl: `/patients/${this.patientId}` }
+    });
   }
 
   onAddRecord(): void {

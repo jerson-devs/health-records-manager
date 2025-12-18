@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, NavigationExtras } from '@angular/router';
 import { MedicalRecordService } from '../../../core/services/medical-record.service';
 import { MedicalRecord } from '../../../core/models/medical-record.models';
 import { MatCardModule } from '@angular/material/card';
@@ -33,9 +33,12 @@ export class RecordDetailComponent implements OnInit {
   record: MedicalRecord | null = null;
   loading = true;
   recordId!: number;
+  returnUrl: string | null = null;
 
   ngOnInit(): void {
     this.recordId = +this.route.snapshot.params['id'];
+    // Obtener returnUrl del state de navegación (history.state persiste después de la navegación)
+    this.returnUrl = (history.state && history.state['returnUrl']) || null;
     this.loadRecord();
   }
 
@@ -55,13 +58,23 @@ export class RecordDetailComponent implements OnInit {
   }
 
   onEdit(): void {
-    this.router.navigate(['/records', this.recordId, 'edit']);
+    const navigationExtras: NavigationExtras = {};
+    // Si hay returnUrl, pasarlo al formulario de edición
+    if (this.returnUrl) {
+      navigationExtras.state = { returnUrl: this.returnUrl };
+    }
+    this.router.navigate(['/records', this.recordId, 'edit'], navigationExtras);
   }
 
   onBack(): void {
-    if (this.record?.patientId) {
+    // Si hay returnUrl (viene de /medical-records), redirigir ahí
+    if (this.returnUrl) {
+      this.router.navigate([this.returnUrl]);
+    } else if (this.record?.patientId) {
+      // Si no hay returnUrl pero hay patientId, redirigir al paciente
       this.router.navigate(['/patients', this.record.patientId]);
     } else {
+      // Por defecto, redirigir a pacientes
       this.router.navigate(['/patients']);
     }
   }

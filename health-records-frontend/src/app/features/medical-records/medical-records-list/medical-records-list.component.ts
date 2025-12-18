@@ -55,7 +55,9 @@ export class MedicalRecordsListComponent implements OnInit {
   }
 
   onViewRecord(id: number): void {
-    this.router.navigate(['/records', id]);
+    this.router.navigate(['/records', id], {
+      state: { returnUrl: '/medical-records' }
+    });
   }
 
   onViewPatient(patientId: number): void {

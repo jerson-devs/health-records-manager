@@ -14,7 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule, MatSpinner } from '@angular/material/progress-spinner';
 import { CreatePatientRequest, UpdatePatientRequest } from '../../../core/models/patient.models';
-import { selectSelectedPatient, selectPatientsLoading } from '../../../core/store/patients/patients.selectors';
+import { selectPatientById, selectPatientsLoading } from '../../../core/store/patients/patients.selectors';
 import * as PatientActions from '../../../core/store/patients/patients.actions';
 
 /**
@@ -54,6 +54,7 @@ export class PatientFormComponent implements OnInit {
   patientId: number | null = null;
   isEditMode = false;
   loading$: Observable<boolean> = this.store.select(selectPatientsLoading);
+  private returnUrl: string = '/patients'; // Ruta por defecto
 
   constructor() {
     this.patientForm = this.fb.group({
@@ -68,18 +69,32 @@ export class PatientFormComponent implements OnInit {
     this.patientId = this.route.snapshot.params['id'];
     this.isEditMode = !!this.patientId;
 
+    // Obtener la ruta de retorno desde el history state
+    // El state se pasa cuando navegamos desde patient-detail o patients-list
+    const historyState = window.history.state;
+    if (historyState && historyState['returnUrl']) {
+      this.returnUrl = historyState['returnUrl'];
+    } else {
+      // Si no hay state (navegación directa o refresh), determinar la ruta de retorno
+      // Por defecto: si hay patientId, retornar al detalle del paciente
+      // Si no hay patientId (crear nuevo), retornar a la lista
+      this.returnUrl = this.patientId ? `/patients/${this.patientId}` : '/patients';
+    }
+
     if (this.isEditMode && this.patientId) {
       // Dispatch acción para cargar paciente
       this.store.dispatch(PatientActions.loadPatient({ id: this.patientId }));
       
       // Suscribirse al selector para obtener el paciente cargado
-      this.store.select(selectSelectedPatient)
+      // Usar selectPatientById en lugar de selectSelectedPatient para obtener el paciente correcto
+      this.store.select(selectPatientById(this.patientId))
         .pipe(
-          filter(patient => patient !== null && patient.id === this.patientId),
+          filter(patient => patient !== null),
           take(1)
         )
         .subscribe(patient => {
           if (patient) {
+            // Prellenar el formulario con los datos del paciente
             this.patientForm.patchValue({
               nombre: patient.nombre,
               email: patient.email,
@@ -125,6 +140,7 @@ export class PatientFormComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/patients']);
+    // Redirigir a la ruta de retorno determinada
+    this.router.navigate([this.returnUrl]);
   }
 }

@@ -57,7 +57,10 @@ export class PatientsListComponent implements OnInit {
   }
 
   onEditPatient(id: number): void {
-    this.router.navigate(['/patients', id, 'edit']);
+    // Pasar el returnUrl en el state para que el formulario sepa que debe volver a la lista
+    this.router.navigate(['/patients', id, 'edit'], {
+      state: { returnUrl: '/patients' }
+    });
   }
 
   onDeletePatient(id: number): void {

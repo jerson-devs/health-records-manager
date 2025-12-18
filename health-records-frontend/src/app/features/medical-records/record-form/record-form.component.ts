@@ -61,6 +61,8 @@ export class RecordFormComponent implements OnInit {
   patients$: Observable<any[]> = this.store.select(selectAllPatients);
   loading$: Observable<boolean> = this.store.select(selectRecordsLoading);
   selectedPatientId: number | null = null;
+  recordPatientId: number | null = null; // Para guardar el patientId del record cuando se edita
+  returnUrl: string | null = null; // Para guardar la URL de retorno (ej: /medical-records)
   
   // Para casos donde necesitamos cargar un record específico (edición)
   // Por ahora usamos el servicio directamente, pero idealmente debería ser una acción
@@ -83,6 +85,9 @@ export class RecordFormComponent implements OnInit {
     this.recordId = this.route.snapshot.params['id'];
     this.isEditMode = !!this.recordId;
     this.selectedPatientId = +this.route.snapshot.queryParams['patientId'] || null;
+    
+    // Obtener returnUrl del state de navegación (history.state persiste después de la navegación)
+    this.returnUrl = (history.state && history.state['returnUrl']) || null;
 
     if (this.isEditMode && this.recordId) {
       // Cargar record para edición
@@ -117,35 +122,51 @@ export class RecordFormComponent implements OnInit {
       }
 
       // Escuchar cuando la operación sea exitosa para navegar
-      // Primero escuchar el success de addRecord
       this.store.select(selectRecordsLoading)
         .pipe(
           filter(loading => !loading),
           take(1)
         )
         .subscribe(() => {
-          const patientId = formValue.patientId || this.selectedPatientId;
-          if (patientId) {
-            // Recargar los datos del paciente y sus historiales antes de navegar
-            this.store.dispatch(PatientActions.loadPatient({ id: patientId }));
-            this.store.dispatch(MedicalRecordActions.loadRecordsByPatient({ patientId }));
-            // Navegar después de un pequeño delay para asegurar que los datos se carguen
-            setTimeout(() => {
-              this.router.navigate(['/patients', patientId]);
-            }, 100);
+          // Si hay returnUrl (viene de /medical-records), redirigir ahí
+          if (this.returnUrl) {
+            this.router.navigate([this.returnUrl]);
           } else {
-            this.router.navigate(['/patients']);
+            // Determinar el patientId: primero queryParams, luego del record si está en edición
+            const patientId = this.selectedPatientId || this.recordPatientId;
+            
+            // Si viene de una vista de paciente específico, redirigir ahí
+            if (patientId) {
+              // Recargar los datos del paciente y sus historiales antes de navegar
+              this.store.dispatch(PatientActions.loadPatient({ id: patientId }));
+              this.store.dispatch(MedicalRecordActions.loadRecordsByPatient({ patientId }));
+              setTimeout(() => {
+                this.router.navigate(['/patients', patientId]);
+              }, 100);
+            } else {
+              // Si viene de /records/new sin patientId, redirigir a /medical-records
+              this.router.navigate(['/medical-records']);
+            }
           }
         });
     }
   }
 
   onCancel(): void {
-    const patientId = this.recordForm.get('patientId')?.value || this.selectedPatientId;
-    if (patientId) {
-      this.router.navigate(['/patients', patientId]);
+    // Si hay returnUrl (viene de /medical-records), redirigir ahí
+    if (this.returnUrl) {
+      this.router.navigate([this.returnUrl]);
     } else {
-      this.router.navigate(['/patients']);
+      // Determinar el patientId: primero queryParams, luego del record si está en edición
+      const patientId = this.selectedPatientId || this.recordPatientId;
+      
+      // Si viene de una vista de paciente específico, redirigir ahí
+      if (patientId) {
+        this.router.navigate(['/patients', patientId]);
+      } else {
+        // Si viene de /records/new sin patientId, redirigir a /medical-records
+        this.router.navigate(['/medical-records']);
+      }
     }
   }
 
@@ -158,6 +179,9 @@ export class RecordFormComponent implements OnInit {
       next: (response) => {
         if (response.success && response.data) {
           const record = response.data;
+          // Guardar el patientId del record para poder redirigir después
+          this.recordPatientId = record.patientId;
+          
           this.recordForm.patchValue({
             patientId: record.patientId,
             fecha: new Date(record.fecha),
