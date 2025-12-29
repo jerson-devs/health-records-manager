@@ -108,8 +108,102 @@ yarn-error.log*
 *.bak
 *.cache
 
+## Oracle Database Files
+# Oracle dump files
+*.dmp
+*.DMP
+# Oracle log files
+*.log
+*.LOG
+# Oracle trace files
+*.trc
+*.TRC
+# Oracle audit files
+*.aud
+*.AUD
+# Oracle SQL*Plus spool files
+*.lst
+*.LST
+# Oracle wallet files
+*.p12
+*.P12
+*.jks
+*.JKS
+# Oracle configuration files (local)
+tnsnames.ora
+TNSNAMES.ORA
+sqlnet.ora
+SQLNET.ORA
+listener.ora
+LISTENER.ORA
+# Oracle data pump directories
+dpdump/
+DPDUMP/
+# Oracle backup files
+*.bkp
+*.BKP
+*.bak
+*.BAK
+
+## Azure Files
+# Azure local settings
+local.settings.json
+local.settings.*.json
+# Azure Functions
+.azure/
+# Azure App Service
+.azurewebsites/
+# Azure deployment files
+.azure-pipelines-local.yml
+# Azure credentials (local)
+*.publishsettings
+*.PublishSettings
+# Azure Storage Emulator
+AzureStorageEmulator.exe.config
+# Azure Service Fabric
+ServiceFabricLocalCluster.json
+# Azure Key Vault (local)
+*.pfx
+*.key
+*.crt
+# Azure Application Insights
+ApplicationInsights.config.local
+
+## TFS (Team Foundation Server) Files
+# TFS ignore file
+.tfignore
+# TFS workspace files
+*.tfignore
+# TFS local workspace
+$tf/
+# TFS pending changes
+*.pending
+# TFS shelveset files
+*.shelveset
+# TFS workspace cache
+.vs/TFS/
+# TFS build files (local)
+*.build.log
+# TFS test results (local)
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+## Git
+# Git LFS
+.gitattributes.local
+# Git hooks (local customizations)
+.git/hooks/*.local
+# Git merge/rebase files
+*.orig
+*.rej
+# Git credential files
+.git-credentials
+.git-credentials.backup
+
 ## Documentation (ignored)
 docs/
 health-records-frontend/docs/
 LEVANTAR_APP.md
-

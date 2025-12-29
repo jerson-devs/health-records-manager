@@ -106,8 +106,8 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
-// Configurar PostgreSQL y DbContext
-builder.Services.AddPostgreSqlContext(builder.Configuration);
+// Configurar base de datos (PostgreSQL u Oracle según configuración)
+builder.Services.AddDatabaseContext(builder.Configuration);
 
 // Configurar Repositorios
 builder.Services.AddRepositories();
